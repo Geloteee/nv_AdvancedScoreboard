@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="main-container">
+        <div id="slide-bar">
+            <div id="buscador">
+                <span class="material-symbols-outlined" id="icon-searcher">search</span>
+                <input type="text" id="buscador-input" placeholder="Search Players">
+            </div>
+            <div class="action-button exit" onclick="ExitScoreboard();">X</div>
+            <div class="action-button" onclick="ShowData('configuration', this);">Configuration</div>
+            <div class="action-button" onclick="ShowData('events', this);">Events</div>
+            <div class="action-button" onclick="ShowData('business', this);">Business</div>
+            <div class="action-button" id="players-bton" style="border: 2px solid var(--white); color: var(--white);" onclick="ShowData('players', this);">Player List</div>
+        </div>
+
+        <div id="tables-container">
+            <div id="players-table">
+                
+            </div>
+            <div id="business-table">
+                
+            </div>
+            <div id="events-table">
+                
+            </div>
+            <div id="configuration-table">
+                <div id="configuration-grid">
+                    <div>
+                        <h3>Background</h3>
+                        <input type="color" id="background-color-rgb">
+                    </div>
+                    <div>
+                        <h3>Background Letters</h3>
+                        <input type="color" id="background-letters-color-rgb">
+                    </div>
+                    <div>
+                        <h3>Banner</h3>
+                        <input type="color" id="banner-color-rgb">
+                    </div>
+                    <div>
+                        <h3>General Letters</h3>
+                        <input type="color" id="general-letters-color-rgb">
+                    </div>
+                    <div>
+                        <h3>Selected Sections</h3>
+                        <input type="color" id="hover-color-rgb">
+                    </div>
+                </div>
+                <div id="configuration-buttons">
+                    <button onclick="SaveColor();">Save</button>
+                    <button onclick="ResetColor();">Reset</button>
+                    <button onclick="DefaultColor();">Default</button>
+                </div>
+                <div id="configuration-jobs-configs">
+                    <div id="configuration-job-1" class="configuration-job-container">
+                        <h1>Manage Events</h1>
+                        <input type="text" id="left-input" placeholder="Name">
+                        <input type="text" id="right-input" placeholder="Image URL">
+                        <button id="upload-image" onclick="UploadImage();">Upload</button>
+                        <button id="upload-image" onclick="RemoveImage();">Remove</button>
+                    </div>
+                    <div id="configuration-job-2" class="configuration-job-container">
+                        <h1>Available Status</h1>
+                        <div id="configuration-job-status-selector">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="banner-container">
+            <div class="players-banner">
+                <span class="players-title">Players</span>
+                <span class="players-count" id="playerNumber">0/48</span>
+            </div>
+            <div class="players-banner">
+                <span class="players-title">Discord</span>
+                <span class="players-count">discord.gg/changeme</span>
+            </div>
+            <div class="players-banner">
+                <span id="players-image-container"><img id="players-img" src="./media/logo.png"></span>
+            </div>
+            <div class="players-banner">
+                <span class="players-title">Tiktok</span>
+                <span class="players-count">@Changeme</span>
+            </div>
+            <div class="players-banner">
+                <span class="players-title">Twitter</span>
+                <span class="players-count">@Changeme</span>
+            </div>
+        </div>
+    </div>
+</body>
+
+<style>
+    .material-symbols-outlined {
+      font-variation-settings:
+      'FILL' 0,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 48
+    }
+</style>
+    <script type="text/javascript" src="./jquery-3.6.1.js"></script>
+    <script type="text/javascript" src="./script.js"></script>
+</html>
+
+<!-- Credits to Geloteee#2901 -->
