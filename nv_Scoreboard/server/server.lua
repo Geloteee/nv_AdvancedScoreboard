@@ -1,13 +1,6 @@
-local srv_limit = GetConvarInt('sv_maxclients', 32)
+local srv_limit = GetConvarInt('sv_maxclients', Config.limit)
 
-ESX = nil
-
-Citizen.CreateThread(function()
-    while ESX == nil do
-        TriggerEvent(Config.ESX_Event, function(obj) ESX = obj end)
-        Citizen.Wait(250)
-    end
-end)
+QBCore = exports['qb-core']:GetCoreObject()
 
 local PLAYERS = {}
 
@@ -23,7 +16,8 @@ end
 
 local events = json.decode(LoadResourceFile('nv_Scoreboard', './data/events.json'))
 
-AddEventHandler('playerJoining', function()
+RegisterServerEvent('nv_Scoreboard:PlayerJoined')
+AddEventHandler('nv_Scoreboard:PlayerJoined', function()
     local _source = source
 
     for k, v in pairs(events) do
@@ -31,8 +25,8 @@ AddEventHandler('playerJoining', function()
     end
     
     PLAYERS[_source] = { id = _source, name = GetPlayerName(_source) }
-    print(IsPlayerAceAllowed(_source, 'nv_Scoreboard.admin'))
-    TriggerClientEvent('nv_Scoreboard:sendPlayerList', _source, PLAYERS, GetTableNumberOfKeys(PLAYERS), srv_limit, IsPlayerAceAllowed(_source, 'nv_Scoreboard.admin'))
+    print(QBCore.Functions.HasPermission(_source, 'admin'))
+    TriggerClientEvent('nv_Scoreboard:sendPlayerList', _source, PLAYERS, GetTableNumberOfKeys(PLAYERS), srv_limit, QBCore.Functions.HasPermission(_source, 'admin'))
     for k, v in pairs(GetPlayers()) do
         local id = tonumber(v)
         if id ~= _source then
@@ -75,13 +69,13 @@ function GetIdentifier(playerId)
 	end
 end
 
-RegisterServerEvent('esx:playerLoaded')
-AddEventHandler('esx:playerLoaded', function(xPlayer)
-    local _source = xPlayer
+RegisterServerEvent('nv_Scoreboard:playerLoad')
+AddEventHandler('nv_Scoreboard:playerLoad', function()
+    local _source = source
     
-    local xPlayer = ESX.GetPlayerFromId(_source)
+    local xPlayer = QBCore.Functions.GetPlayer(_source)
 
-    local job = xPlayer.getJob().name
+    local job = xPlayer.PlayerData.job.name
 
     local actualBusiness = 'none'
 
@@ -118,9 +112,9 @@ RegisterServerEvent('nv_Scoreboard:setJob')
 AddEventHandler('nv_Scoreboard:setJob', function(p_job)
     local _source = source
     
-    local xPlayer = ESX.GetPlayerFromId(_source)
+    local xPlayer = QBCore.Functions.GetPlayer(_source)
 
-    local job = xPlayer.getJob().name
+    local job = xPlayer.PlayerData.job.name
 
     if job == p_job then
         local actualBusiness = 'none'
@@ -170,9 +164,9 @@ RegisterServerEvent('nv_Scoreboard:changeJobStatus')
 AddEventHandler('nv_Scoreboard:changeJobStatus', function(data)
     local _source = source
     
-    local xPlayer = ESX.GetPlayerFromId(_source)
+    local xPlayer = QBCore.Functions.GetPlayer(_source)
 
-    local job = xPlayer.getJob().name
+    local job = xPlayer.PlayerData.job.name
 
     local actualBusiness = 'none'
 
@@ -235,7 +229,7 @@ AddEventHandler('nv_Scoreboard:DefaultColor', function()
 end)
 
 RegisterCommand('nv_events_upload', function(source, args)
-    if IsPlayerAceAllowed(source, 'nv_Scoreboard.admin') then
+    if QBCore.Functions.HasPermission(source, 'admin') then
         if args[1] then
             TriggerClientEvent('nv_Scoreboard:sendEventImgToPlayers', -1, args[1], args[2])
     
@@ -250,7 +244,7 @@ RegisterCommand('nv_events_upload', function(source, args)
 end)
 
 RegisterCommand('nv_events_remove', function(source, args)
-    if IsPlayerAceAllowed(source, 'nv_Scoreboard.admin') then
+    if QBCore.Functions.HasPermission(source, 'admin') then
         if args[1] then
             TriggerClientEvent('nv_Scoreboard:removeEventImgToPlayers', -1, args[1])
             events[args[1]] = nil
@@ -263,7 +257,7 @@ RegisterCommand('nv_events_remove', function(source, args)
 end)
 
 RegisterCommand('nv_events_list', function(source, args)
-    if IsPlayerAceAllowed(source, 'nv_Scoreboard.admin') then
+    if QBCore.Functions.HasPermission(source, 'admin') then
         local identifier = GetIdentifier(source)
         local current_color = colors[identifier]
         TriggerClientEvent('chatMessage', source, '^1Image List')

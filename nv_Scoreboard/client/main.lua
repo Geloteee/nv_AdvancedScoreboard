@@ -2,6 +2,7 @@
 
     GLOBAL
     Credits to Geloteee#2901
+    Converted to QBCore - Tiggythetiger#0424
     
 ]]
 
@@ -26,6 +27,11 @@ end)
 
 ]]
 
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
+    TriggerServerEvent("nv_Scoreboard:PlayerJoined")
+    TriggerServerEvent("nv_Scoreboard:playerLoad")
+end)
+
 RegisterCommand('scoreboard', function()
     display = not display
     SetNuiFocus(display, display)
@@ -46,7 +52,7 @@ RegisterNUICallback('exit', function(data)
     })
 end)
 
-local srv_limit = 32
+local srv_limit = Config.limit
 
 RegisterNetEvent('nv_Scoreboard:sendPlayerList')
 AddEventHandler('nv_Scoreboard:sendPlayerList', function(PLAYERS, playerCount, playerLimit, isAdmin)
@@ -166,8 +172,8 @@ AddEventHandler('nv_Scoreboard:removeEventImgToPlayers', function(name)
     })
 end)
 
-RegisterNetEvent('esx:setJob')
-AddEventHandler('esx:setJob', function(data)
+RegisterNetEvent('QBCore:Client:OnJobUpdate')
+AddEventHandler('QBCore:Client:OnJobUpdate', function(data)
     TriggerServerEvent('nv_Scoreboard:setJob', data.name)
 end)
 

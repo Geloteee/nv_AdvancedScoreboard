@@ -1,8 +1,9 @@
 Config = {}
 
-Config.ESX_Event = 'esx:getSharedObject'
-
 Config.Locale = 'en'
+
+-- Set your server player limit
+Config.limit = 48
 
 Config.Translations = {
     ['en'] = {
@@ -22,7 +23,7 @@ Config.Translations = {
 }
 
 Config.Notification = function(action)
-    TriggerEvent('esx:showNotification', Config.Translations[Config.Locale][action])
+    TriggerEvent('QBCore:Notify', Config.Translations[Config.Locale][action])
 end
 
 Config.Business = {
