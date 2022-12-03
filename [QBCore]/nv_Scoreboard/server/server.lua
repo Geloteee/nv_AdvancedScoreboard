@@ -18,7 +18,7 @@ end
 local events = json.decode(LoadResourceFile('nv_Scoreboard', './data/events.json'))
 
 RegisterServerEvent('nv_Scoreboard:PlayerJoined')
-AddEventHandler('nv_Scoreboard:PlayerJoined', function()
+AddEventHandler('nv_Scoreboard:PlayerJoined', function(fullname)
     local _source = source
 
     for k, v in pairs(events) do
@@ -26,8 +26,7 @@ AddEventHandler('nv_Scoreboard:PlayerJoined', function()
     end
     
     if Config.RPNames then
-        TriggerClientEvent('nv_Scoreboard:PlayerInfo', _source, FullName)
-        PLAYERS[_source] = { id = _source, name = FullName }
+        PLAYERS[_source] = { id = _source, name = fullname }
     else
         PLAYERS[_source] = { id = _source, name = GetPlayerName(_source) }
     end
@@ -139,6 +138,7 @@ AddEventHandler('nv_Scoreboard:playerLoad', function()
         TriggerClientEvent('nv_Scoreboard:sendBusinessActives', _source, BusinessActives, actualBusiness, BusinessActives[actualBusiness].CurrentStatus)
         TriggerClientEvent('nv_Scoreboard:loadRobberies', _source, RobberiesActives)
     else
+        TriggerClientEvent('nv_Scoreboard:loadRobberies', _source, RobberiesActives)
         TriggerClientEvent('nv_Scoreboard:sendBusinessActives', _source, BusinessActives, actualBusiness, {})
     end
 end)
