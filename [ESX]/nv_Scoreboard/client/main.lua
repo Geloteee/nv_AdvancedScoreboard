@@ -193,6 +193,10 @@ end)
 
 RegisterNetEvent('nv_Scoreboard:getColor')
 AddEventHandler('nv_Scoreboard:getColor', function(colors)
+    while not ready do
+        Citizen.Wait(100)
+    end
+    
     SendNUIMessage({
         type = 'getColor',
         current_colors = json.encode(colors)
@@ -201,6 +205,10 @@ end)
 
 RegisterNetEvent('nv_Scoreboard:getChangedJobStatus')
 AddEventHandler('nv_Scoreboard:getChangedJobStatus', function(status, identifier, currentBusiness)
+    while not ready do
+        Citizen.Wait(100)
+    end
+    
     SendNUIMessage({
         type = 'getChangedJobStatus',
         current_status = status,
@@ -211,11 +219,45 @@ end)
 
 RegisterNetEvent('nv_Scoreboard:getStatus')
 AddEventHandler('nv_Scoreboard:getStatus', function(status)
+    while not ready do
+        Citizen.Wait(100)
+    end
+
     SendNUIMessage({
         type = 'getStatus',
         Status = status,
     })
 end)
+
+RegisterNetEvent('nv_Scoreboard:loadRobberies')
+AddEventHandler('nv_Scoreboard:loadRobberies', function(robberies)
+    while not ready do
+        Citizen.Wait(100)
+    end
+    
+    SendNUIMessage({
+        type = 'loadRobberies',
+        data = robberies,
+    })
+end)
+
+RegisterNetEvent('nv_Scoreboard:updateRobberies')
+AddEventHandler('nv_Scoreboard:updateRobberies', function(robbery, status)
+    while not ready do
+        Citizen.Wait(100)
+    end
+    
+    SendNUIMessage({
+        type = 'updateRobberies',
+        name = robbery,
+        color = status
+    })
+end)
+
+
+
+
+
 
 RegisterNetEvent('nv_Scoreboard:notify')
 AddEventHandler('nv_Scoreboard:notify', function(action)

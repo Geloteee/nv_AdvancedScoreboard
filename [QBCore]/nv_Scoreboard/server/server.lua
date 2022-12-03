@@ -1,10 +1,11 @@
-local srv_limit = GetConvarInt('sv_maxclients', Config.limit)
+local srv_limit = GetConvarInt('sv_maxclients', 32) -- Auto Player Limit Detector
 
 QBCore = exports['qb-core']:GetCoreObject()
 
 local PLAYERS = {}
 
 local BusinessActives = {}
+local RobberiesActives = {}
 
 function GetTableNumberOfKeys(table)
     local numItems = 0
@@ -24,7 +25,13 @@ AddEventHandler('nv_Scoreboard:PlayerJoined', function()
         TriggerClientEvent('nv_Scoreboard:sendEventImgToPlayers', _source, v, k)
     end
     
-    PLAYERS[_source] = { id = _source, name = GetPlayerName(_source) }
+    if Config.RPNames then
+        local Player = QBCore.Functions.GetPlayerData(_source)
+        local FullName = Player.charinfo.firstname..' '.. Player.charinfo.lastname
+        PLAYERS[_source] = { id = _source, name = FullName }
+    else
+        PLAYERS[_source] = { id = _source, name = GetPlayerName(_source) }
+    end
 
     TriggerClientEvent('nv_Scoreboard:sendPlayerList', _source, PLAYERS, GetTableNumberOfKeys(PLAYERS), srv_limit, QBCore.Functions.HasPermission(_source, 'admin'))
     for k, v in pairs(GetPlayers()) do
@@ -50,6 +57,20 @@ AddEventHandler('playerDropped', function()
         BusinessActives[actualBusiness].Count = BusinessActives[actualBusiness].Count - 1
         BusinessActives[actualBusiness].PlayerList[_source] = nil
 
+        for k, v in pairs(RobberiesActives) do
+            if RobberiesActives[k] then
+                if BusinessActives[actualBusiness].Job == RobberiesActives[k].Job then
+                    if BusinessActives[actualBusiness].Count >= RobberiesActives[k].Min then
+                        TriggerClientEvent('nv_Scoreboard:updateRobberies', -1, k, true)
+                        RobberiesActives[k].Available = true
+                    else
+                        TriggerClientEvent('nv_Scoreboard:updateRobberies', -1, k, false)
+                        RobberiesActives[k].Available = false
+                    end
+                end
+            end
+        end
+
         PLAYERS[_source] = nil
         TriggerClientEvent('nv_Scoreboard:playerDropped', -1, _source, GetTableNumberOfKeys(PLAYERS), BusinessActives[actualBusiness].Count)
     else
@@ -70,8 +91,8 @@ function GetIdentifier(playerId)
 end
 
 RegisterServerEvent('nv_Scoreboard:playerLoad')
-AddEventHandler('nv_Scoreboard:playerLoad', function()
-    local _source = source
+AddEventHandler('nv_Scoreboard:playerLoad', function(xPlayer)
+    local _source = xPlayer
     
     local xPlayer = QBCore.Functions.GetPlayer(_source)
 
@@ -95,6 +116,20 @@ AddEventHandler('nv_Scoreboard:playerLoad', function()
         BusinessActives[actualBusiness].Count = BusinessActives[actualBusiness].Count + 1
         BusinessActives[actualBusiness].PlayerList[_source] = ''
 
+        for k, v in pairs(RobberiesActives) do
+            if RobberiesActives[k] then
+                if BusinessActives[actualBusiness].Job == RobberiesActives[k].Job then
+                    if BusinessActives[actualBusiness].Count >= RobberiesActives[k].Min then
+                        TriggerClientEvent('nv_Scoreboard:updateRobberies', -1, k, true)
+                        RobberiesActives[k].Available = true
+                    else
+                        TriggerClientEvent('nv_Scoreboard:updateRobberies', -1, k, false)
+                        RobberiesActives[k].Available = false
+                    end
+                end
+            end
+        end
+
         for k, v in pairs(GetPlayers()) do
             local id = tonumber(v)
             if id ~= _source then
@@ -103,6 +138,7 @@ AddEventHandler('nv_Scoreboard:playerLoad', function()
         end
 
         TriggerClientEvent('nv_Scoreboard:sendBusinessActives', _source, BusinessActives, actualBusiness, BusinessActives[actualBusiness].CurrentStatus)
+        TriggerClientEvent('nv_Scoreboard:loadRobberies', _source, RobberiesActives)
     else
         TriggerClientEvent('nv_Scoreboard:sendBusinessActives', _source, BusinessActives, actualBusiness, {})
     end
@@ -137,9 +173,38 @@ AddEventHandler('nv_Scoreboard:setJob', function(p_job)
             BusinessActives[actualBusiness].Count = BusinessActives[actualBusiness].Count - 1
             BusinessActives[actualBusiness].PlayerList[_source] = nil
 
+            for k, v in pairs(RobberiesActives) do
+                if RobberiesActives[k] then
+                    if BusinessActives[actualBusiness].Job == RobberiesActives[k].Job then
+                        if BusinessActives[actualBusiness].Count >= RobberiesActives[k].Min then
+                            TriggerClientEvent('nv_Scoreboard:updateRobberies', -1, k, true)
+                            RobberiesActives[k].Available = true
+                        else
+                            TriggerClientEvent('nv_Scoreboard:updateRobberies', -1, k, false)
+                            RobberiesActives[k].Available = false
+                        end
+                    end
+                end
+            end
+
             if actualBusiness2 ~= 'none' then
                 BusinessActives[actualBusiness2].Count = BusinessActives[actualBusiness2].Count + 1
                 BusinessActives[actualBusiness2].PlayerList[_source] = ''
+
+                for k, v in pairs(RobberiesActives) do
+                    if RobberiesActives[k] then
+                        if BusinessActives[actualBusiness2].Job == RobberiesActives[k].Job then
+                            if BusinessActives[actualBusiness2].Count >= RobberiesActives[k].Min then
+                                TriggerClientEvent('nv_Scoreboard:updateRobberies', -1, k, true)
+                                RobberiesActives[k].Available = true
+                            else
+                                TriggerClientEvent('nv_Scoreboard:updateRobberies', -1, k, false)
+                                RobberiesActives[k].Available = false
+                            end
+                        end
+                    end
+                end
+
                 TriggerClientEvent('nv_Scoreboard:getStatus', _source, BusinessActives[actualBusiness2].Status)
                 TriggerClientEvent('nv_Scoreboard:joiningBusinessActives', -1, actualBusiness, BusinessActives[actualBusiness].Count)
                 TriggerClientEvent('nv_Scoreboard:joiningBusinessActives', -1, actualBusiness2, BusinessActives[actualBusiness2].Count)
@@ -151,6 +216,21 @@ AddEventHandler('nv_Scoreboard:setJob', function(p_job)
             if actualBusiness2 ~= 'none' then
                 BusinessActives[actualBusiness2].Count = BusinessActives[actualBusiness2].Count + 1
                 BusinessActives[actualBusiness2].PlayerList[_source] = ''
+
+                for k, v in pairs(RobberiesActives) do
+                    if RobberiesActives[k] then
+                        if BusinessActives[actualBusiness2].Job == RobberiesActives[k].Job then
+                            if BusinessActives[actualBusiness2].Count >= RobberiesActives[k].Min then
+                                TriggerClientEvent('nv_Scoreboard:updateRobberies', -1, k, true)
+                                RobberiesActives[k].Available = true
+                            else
+                                TriggerClientEvent('nv_Scoreboard:updateRobberies', -1, k, false)
+                                RobberiesActives[k].Available = false
+                            end
+                        end
+                    end
+                end
+
                 TriggerClientEvent('nv_Scoreboard:getStatus', _source, BusinessActives[actualBusiness2].Status)
                 TriggerClientEvent('nv_Scoreboard:joiningBusinessActives', -1, actualBusiness2, BusinessActives[actualBusiness2].Count)
             else
@@ -281,4 +361,13 @@ for k, v in pairs(Config.Business) do
     for k2, v2 in pairs(BusinessActives[k].Status) do
         BusinessActives[k].CurrentStatus[k2] = v2[1]
     end
+end
+
+for k, v in pairs(Config.Robberies) do
+    RobberiesActives[k] = {
+        Description = v.Description,
+        Job = v.Job,
+        Min = v.Min,
+        Available = false,
+    }
 end

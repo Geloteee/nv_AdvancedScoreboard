@@ -16,6 +16,7 @@ function ShowData(type, esto) {
         $('#players-table').show();
         $('#business-table').hide();
         $('#events-table').hide();
+        $('#robberies-table').hide();
         $('#configuration-table').hide();
         $('#buscador').fadeIn(200);
         document.getElementById('buscador-input').placeholder = 'Search Player';
@@ -28,6 +29,7 @@ function ShowData(type, esto) {
         $('#players-table').hide();
         $('#business-table').show();
         $('#events-table').hide();
+        $('#robberies-table').hide();
         $('#configuration-table').hide();
         $('#buscador').fadeIn(200);
         document.getElementById('buscador-input').placeholder = 'Search Business';
@@ -39,6 +41,7 @@ function ShowData(type, esto) {
         $(esto).css('color', 'var(--white)')
         $('#players-table').hide();
         $('#business-table').hide();
+        $('#robberies-table').hide();
         $('#events-table').show();
         $('#configuration-table').hide();
         $('#buscador').fadeOut(200);
@@ -51,8 +54,22 @@ function ShowData(type, esto) {
         $('#players-table').hide();
         $('#business-table').hide();
         $('#events-table').hide();
+        $('#robberies-table').hide();
         $('#configuration-table').show();
         $('#buscador').fadeOut(200);
+    } else if (type === 'robberies') {
+        type_filter = type;
+        $(last_data).css('border', 'none')
+        $(last_data).css('color', 'var(--button-not-selected)')
+        $(esto).css('border', '2px solid var(--white)')
+        $(esto).css('color', 'var(--white)')
+        $('#players-table').hide();
+        $('#business-table').hide();
+        $('#events-table').hide();
+        $('#configuration-table').hide();
+        $('#robberies-table').show();
+        $('#buscador').fadeIn(200);
+        document.getElementById('buscador-input').placeholder = 'Search Robbery';
     }
     last_data = esto;
 }
@@ -247,6 +264,67 @@ window.addEventListener('message', function(event) {
         $('#'+item.business+'-banner-'+item.id+' h1').html(item.current_status);
     } else if (item.type === "no-job") {
         $('#configuration-job-2').fadeOut();
+    } else if (item.type === "loadRobberies") {
+        for (const table in item.data) {
+            if (Object.hasOwnProperty.call(item.data, table)) {
+                const table_container = item.data[table];
+                if (table_container.Available) {
+                    $('#robberies-table').append(`
+                    <div class="robberies-container">
+                        <div class="robberies-logo-container">
+                            <img class="robberies-logo" src="./media/${table}.png">
+                        </div>
+                        <div class="robberies-content">
+                            <div class="robberies-content-text">
+                                <h3 class="robberies-name-class">${table}</h3>
+                                <h4>${table_container.Description}</h4>
+                            </div>
+                            <div class="robberies-banner">
+                                <div class="busines-banner-info">
+                                    <div class="robberies-outline" id="${table}-banner">
+                                    </div>
+                                </div>
+                                <div class="robberies-status">
+                                    <div id="${table}-color" class="robberies-status-color" style="background-color: #42ab49;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `)
+                } else {
+                    $('#robberies-table').append(`
+                    <div class="robberies-container">
+                        <div class="robberies-logo-container">
+                            <img class="robberies-logo" src="./media/${table}.png">
+                        </div>
+                        <div class="robberies-content">
+                            <div class="robberies-content-text">
+                                <h3 class="robberies-name-class">${table}</h3>
+                                <h4>${table_container.Description}</h4>
+                            </div>
+                            <div class="robberies-banner">
+                                <div class="busines-banner-info">
+                                    <div class="robberies-outline" id="${table}-banner">
+                                    </div>
+                                </div>
+                                <div class="robberies-status">
+                                    <div id="${table}-color" class="robberies-status-color" style="background-color: red;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `)
+                }
+            }
+        }
+    } else if (item.type === "updateRobberies") {
+        console.log(item.color);
+        if (item.color) {
+            console.log(item.name+'-color');
+            $('#'+item.name+'-color').css('background-color', '#42ab49')
+        } else {
+            $('#'+item.name+'-color').css('background-color', 'red')
+        }
     } else if(item.type === 'getColor') {
         object = JSON.parse(item.current_colors);
         r.style.setProperty('--background', object['1-color']);
@@ -327,12 +405,35 @@ input.addEventListener("input", function() {
                 }
             }
         }
-    } else {
+    } else if (type_filter == 'business') {
         var all = $(".business-name-class").map(function() {
             return this;
         }).get();
     
         var all2 = $(".business-container").map(function() {
+            return this;
+        }).get();
+    
+        var filter = this.value.toUpperCase();
+        var divs = all2;
+        for (var i = 0; i < divs.length; i++) {
+            var a = all[i];
+    
+            if (a) {
+                if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    $(divs[i]).fadeIn(200);
+                    $('.id-container').fadeIn(200);
+                } else {
+                    $(divs[i]).fadeOut(200);
+                }
+            }
+        }
+    } else if (type_filter == 'robberies') {
+        var all = $(".robberies-name-class").map(function() {
+            return this;
+        }).get();
+    
+        var all2 = $(".robberies-container").map(function() {
             return this;
         }).get();
     

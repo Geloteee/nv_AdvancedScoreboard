@@ -39,7 +39,7 @@
 
 #buscador {
     display: inline-block;
-    width: 200px;
+    width: 180px;
     height: 75%;
     background-color: var(--button-background);
     border-radius: 5px;
@@ -48,12 +48,14 @@
 #icon-searcher {
     margin-top: 3%;
     margin-left: 5%;
+    width: 10px;
+    height: auto;
     color: var(--icon-search-color);
 }
 
 #buscador-input {
     transition: all 0.2s ease;
-    width: 125px;
+    width: 110px;
     float: right;
     margin-top: 5%;
     margin-right: 10%;
@@ -571,3 +573,152 @@
 }
 
 /* Credits to Geloteee#2901 */
+
+#robberies-table {
+    display: none;
+    overflow: auto;
+    height: 100%;
+    width: 100.75%;
+    margin-left: 10px;
+    overflow-y: scroll;
+}
+
+#robberies-table::-webkit-scrollbar {
+    display: none;
+}
+
+.robberies-container {
+    display: inline-block;
+    height: 25.5%;
+    width: 32%;
+    border-radius: 5px;
+    background-color: var(--player-name-background);
+    margin-bottom: 1%;
+    margin-right: 0.6%;
+}
+
+.robberies-logo-container {
+    display: inline-block;
+    width: 32%;
+    height: 100%;
+    background-color: var(--button-background);
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.robberies-logo {
+    margin: 10%;
+    transform: translateY(7.75%);
+    height: auto;
+    width: 80%;
+}
+
+.robberies-content {
+    display: inline-block;
+    vertical-align: top;
+    width: 61%;
+    height: 96%;
+    margin: 1%;
+}
+
+.robberies-content-text {
+    height: 67.5%;
+    max-height: 67.5%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.robberies-content h3 {
+    display: block;
+    color: var(--white);
+    font-size: 80%;
+    width: 92.5%;
+    margin: 0;
+}
+
+.robberies-content h4 {
+    display: block;
+    color: var(--id-color);
+    font-size: 60%;
+    width: 92.5%;
+    margin: 0;
+}
+
+.robberies-banner {
+    height: 25%;
+    vertical-align: top;
+}
+
+.robberies-banner-info {
+    display: inline-block;
+    width: 70%;
+    height: 105%;
+    overflow: hidden;
+    overflow-x: scroll;
+}
+
+.robberies-banner-info::-webkit-scrollbar {
+    display: none;
+}
+
+.robberies-outline {
+    display: inline-block;
+    height: 70%;
+    width: 20000px;
+    border-radius: 5px;
+    overflow: hidden;
+    padding: 3px;
+}
+
+.robberies-outline::-webkit-scrollbar {
+    display: none;
+}
+
+.robberies-info {
+    display: inline-block;
+    background-color: var(--white);
+    height: 16px;
+    border-radius: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+    width: auto;
+    max-width: 100px;
+}
+
+.robberies-info h1 {
+    display: inline-block;
+    vertical-align: top;
+    height: 20%;
+    font-size: 65%;
+    width: auto;
+    margin: 0;
+    border-radius: 2px;
+}
+
+.robberies-status {
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+    height: 17.5px;
+    width: 35px;
+    transform: translateY(0px) translateX(15px);
+}
+
+.robberies-status-color {
+    display: inline-block;
+    vertical-align: top;
+    height: 85px;
+    width: 15px;
+    border-radius: 10px;
+    transform: translateY(-70px) translateX(12.5px);
+}
+
+.robberies-status h1 {
+    display: inline-block;
+    margin: 0;
+    height: 10px;
+    width: 10px;
+    font-size: 95%;
+    color: var(--white);
+    transform: translateY(-8px);
+}
