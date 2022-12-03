@@ -91,8 +91,8 @@ function GetIdentifier(playerId)
 end
 
 RegisterServerEvent('nv_Scoreboard:playerLoad')
-AddEventHandler('nv_Scoreboard:playerLoad', function(xPlayer)
-    local _source = xPlayer
+AddEventHandler('nv_Scoreboard:playerLoad', function()
+    local _source = source
     
     local xPlayer = QBCore.Functions.GetPlayer(_source)
 
