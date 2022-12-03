@@ -6,6 +6,8 @@
     
 ]]
 
+local QBCore = exports['qb-core']:GetCoreObject()
+
 function GetTableNumberOfKeys(table)
     local numItems = 0
     for k,v in pairs(table) do
@@ -75,6 +77,13 @@ AddEventHandler('nv_Scoreboard:sendPlayerList', function(PLAYERS, playerCount, p
         limit = srv_limit,
         admin = isAdmin
     })
+end)
+
+RegisterNetEvent('nv_Scoreboard:PlayerInfo')
+AddEventHandler('nv_Scoreboard:PlayerInfo', function(FullName)
+    local Player = QBCore.Functions.GetPlayerData()
+    local FullName = Player.charinfo.firstname..' '.. Player.charinfo.lastname
+    print(FullName)
 end)
 
 RegisterNetEvent('nv_Scoreboard:playerJoining')

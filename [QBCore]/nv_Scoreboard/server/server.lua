@@ -26,8 +26,7 @@ AddEventHandler('nv_Scoreboard:PlayerJoined', function()
     end
     
     if Config.RPNames then
-        local Player = QBCore.Functions.GetPlayerData(_source)
-        local FullName = Player.charinfo.firstname..' '.. Player.charinfo.lastname
+        TriggerClientEvent('nv_Scoreboard:PlayerInfo', _source, FullName)
         PLAYERS[_source] = { id = _source, name = FullName }
     else
         PLAYERS[_source] = { id = _source, name = GetPlayerName(_source) }
@@ -91,8 +90,8 @@ function GetIdentifier(playerId)
 end
 
 RegisterServerEvent('nv_Scoreboard:playerLoad')
-AddEventHandler('nv_Scoreboard:playerLoad', function(xPlayer)
-    local _source = xPlayer
+AddEventHandler('nv_Scoreboard:playerLoad', function()
+    local _source = source
     
     local xPlayer = QBCore.Functions.GetPlayer(_source)
 
