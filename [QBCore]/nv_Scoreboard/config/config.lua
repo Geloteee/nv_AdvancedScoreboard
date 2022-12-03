@@ -1,7 +1,5 @@
 Config = {}
 
-Config.ESX_Event = 'esx:getSharedObject'
-
 Config.Locale = 'en'
 
 Config.RPNames = false -- Set to "true" if you want RP Names
