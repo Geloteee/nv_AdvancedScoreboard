@@ -52,8 +52,12 @@ AddEventHandler('playerDropped', function()
     end
 
     if actualBusiness ~= 'none' then
-        BusinessActives[actualBusiness].Count = BusinessActives[actualBusiness].Count - 1
-        BusinessActives[actualBusiness].PlayerList[_source] = nil
+        if BusinessActives[actualBusiness].PlayerList[_source] == 'offduty' then
+            BusinessActives[actualBusiness].PlayerList[_source] = nil
+        else
+            BusinessActives[actualBusiness].Count = BusinessActives[actualBusiness].Count - 1
+            BusinessActives[actualBusiness].PlayerList[_source] = nil
+        end
 
         for k, v in pairs(RobberiesActives) do
             if RobberiesActives[k] then
@@ -169,8 +173,12 @@ AddEventHandler('nv_Scoreboard:setJob', function(p_job)
         end
 
         if actualBusiness ~= 'none' then
-            BusinessActives[actualBusiness].Count = BusinessActives[actualBusiness].Count - 1
-            BusinessActives[actualBusiness].PlayerList[_source] = nil
+            if BusinessActives[actualBusiness].PlayerList[_source] == 'offduty' then
+                BusinessActives[actualBusiness].PlayerList[_source] = nil
+            else
+                BusinessActives[actualBusiness].Count = BusinessActives[actualBusiness].Count - 1
+                BusinessActives[actualBusiness].PlayerList[_source] = nil
+            end
 
             for k, v in pairs(RobberiesActives) do
                 if RobberiesActives[k] then
@@ -236,6 +244,53 @@ AddEventHandler('nv_Scoreboard:setJob', function(p_job)
                 TriggerClientEvent('nv_Scoreboard:noneJob', _source)
             end
         end
+    end
+end)
+
+RegisterNetEvent('QBCore:ToggleDuty', function()
+    local _source = source
+    local xPlayer = QBCore.Functions.GetPlayer(_source)
+
+    local job = xPlayer.PlayerData.job.name
+
+    local actualBusiness = 'none'
+
+    for k, v in pairs(BusinessActives) do
+        if v.PlayerList[_source] then
+            actualBusiness = k
+        end
+    end
+
+    if actualBusiness ~= 'none' then
+        local onduty = not (xPlayer.PlayerData.job.onduty)
+
+        if onduty then
+            BusinessActives[actualBusiness].Count = BusinessActives[actualBusiness].Count + 1
+            BusinessActives[actualBusiness].PlayerList[_source] = ''
+        else
+            BusinessActives[actualBusiness].Count = BusinessActives[actualBusiness].Count - 1
+            BusinessActives[actualBusiness].PlayerList[_source] = 'offduty'
+        end
+
+        for k, v in pairs(RobberiesActives) do
+            if RobberiesActives[k] then
+                if BusinessActives[actualBusiness].Job == RobberiesActives[k].Job then
+                    if BusinessActives[actualBusiness].Count >= RobberiesActives[k].Min then
+                        TriggerClientEvent('nv_Scoreboard:updateRobberies', -1, k, true)
+                        RobberiesActives[k].Available = true
+                    else
+                        TriggerClientEvent('nv_Scoreboard:updateRobberies', -1, k, false)
+                        RobberiesActives[k].Available = false
+                    end
+                end
+            end
+        end
+
+        TriggerClientEvent('nv_Scoreboard:getStatus', _source, BusinessActives[actualBusiness].Status)
+        TriggerClientEvent('nv_Scoreboard:joiningBusinessActives', -1, actualBusiness, BusinessActives[actualBusiness].Count)
+        TriggerClientEvent('nv_Scoreboard:joiningBusinessActives', -1, actualBusiness, BusinessActives[actualBusiness].Count)
+    else
+        TriggerClientEvent('nv_Scoreboard:noneJob', _source)
     end
 end)
 
