@@ -318,9 +318,7 @@ window.addEventListener('message', function(event) {
             }
         }
     } else if (item.type === "updateRobberies") {
-        console.log(item.color);
         if (item.color) {
-            console.log(item.name+'-color');
             $('#'+item.name+'-color').css('background-color', '#42ab49')
         } else {
             $('#'+item.name+'-color').css('background-color', 'red')
