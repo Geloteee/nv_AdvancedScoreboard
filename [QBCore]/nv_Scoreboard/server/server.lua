@@ -147,6 +147,8 @@ AddEventHandler('nv_Scoreboard:playerLoad', function()
     end
 end)
 
+local duty_job = {}
+
 RegisterServerEvent('nv_Scoreboard:setJob')
 AddEventHandler('nv_Scoreboard:setJob', function(p_job)
     local _source = source
@@ -155,7 +157,9 @@ AddEventHandler('nv_Scoreboard:setJob', function(p_job)
 
     local job = xPlayer.PlayerData.job.name
 
-    if job == p_job then
+    if duty_job[_source] == nil then
+        duty_job[_source] = nil
+	if job == p_job then
         local actualBusiness = 'none'
 
         for k, v in pairs(BusinessActives) do
@@ -245,6 +249,7 @@ AddEventHandler('nv_Scoreboard:setJob', function(p_job)
             end
         end
     end
+    end
 end)
 
 RegisterNetEvent('QBCore:ToggleDuty', function()
@@ -255,6 +260,8 @@ RegisterNetEvent('QBCore:ToggleDuty', function()
 
     local actualBusiness = 'none'
 
+    duty_job[_source] = true
+		
     for k, v in pairs(BusinessActives) do
         if v.PlayerList[_source] then
             actualBusiness = k
@@ -287,7 +294,6 @@ RegisterNetEvent('QBCore:ToggleDuty', function()
         end
 
         TriggerClientEvent('nv_Scoreboard:getStatus', _source, BusinessActives[actualBusiness].Status)
-        TriggerClientEvent('nv_Scoreboard:joiningBusinessActives', -1, actualBusiness, BusinessActives[actualBusiness].Count)
         TriggerClientEvent('nv_Scoreboard:joiningBusinessActives', -1, actualBusiness, BusinessActives[actualBusiness].Count)
     else
         TriggerClientEvent('nv_Scoreboard:noneJob', _source)
